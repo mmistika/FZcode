@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/icon.ico</file>
+        <file>icons/checkboxChecked.png</file>
+        <file>icons/checkboxUnchecked.png</file>
+        <file>icons/closeButton.png</file>
+        <file>icons/closeButtonHover.png</file>
+        <file>icons/comboboxArrow.png</file>
+        <file>icons/homeButton.png</file>
+        <file>icons/homeButtonRotated.png</file>
+        <file>icons/minimizeButton.png</file>
+        <file>icons/minimizeButtonHover.png</file>
+        <file>icons/quitTrayButton.png</file>
+        <file>icons/radioButtonChecked.png</file>
+        <file>icons/radioButtonUnchecked.png</file>
+        <file>icons/settingsButton.png</file>
+        <file>icons/settingsButtonRotated.png</file>
+        <file>icons/showTrayButton.png</file>
+        <file>icons/tableButton.png</file>
+        <file>icons/tableButtonRotated.png</file>
+        <file>icons/flags/en.png</file>
+        <file>icons/flags/ru.png</file>
+        <file>icons/flags/ua.png</file>
+        <file>styles/defaultDark.qss</file>
+        <file>icons/add.png</file>
+        <file>icons/delete.png</file>
+        <file>icons/upArrow.png</file>
+        <file>icons/downArrow.png</file>
+    </qresource>
+</RCC>
