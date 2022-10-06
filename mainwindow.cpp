@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
       settings(new Settings("Mistika Software", "FZcode")),
       tablesData(new TablesData("tables.json")),
       clipboard(qApp->clipboard()),
+      translator(new QTranslator()),
       currentDayIndex(QDate::currentDate().dayOfWeek()-1)
 
 {
@@ -27,10 +28,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     ui->daysComboBox->setCurrentIndex(currentDayIndex);
+    ui->homeTable->setColumnWidth(2, 85);
     ui->macrosBtn->setVisible(false);
     ui->killBtn->setVisible(false);
     ui->shortcutsGroup->setVisible(false);
-    ui->languageGroup->setVisible(false);
 
     setupToolTips();
 
@@ -72,6 +73,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->alwaysOnTopCheckBox, &QCheckBox::toggled, this, &MainWindow::changeOnTopRule);
     // --> Save last window state
     connect(ui->saveStateCheckBox, &QCheckBox::toggled, this, [this](){if(!settings->onInit) saveSettings();});
+
+    // --> Languages
+    connect(ui->enRadioButton, &QRadioButton::clicked, this, &MainWindow::changeLang);
+    connect(ui->uaRadioButton, &QRadioButton::clicked, this, &MainWindow::changeLang);
+    connect(ui->ruRadioButton, &QRadioButton::clicked, this, &MainWindow::changeLang);
 
     settings->load();
     tablesData->load();
@@ -117,6 +123,7 @@ void MainWindow::saveSettings()
     // UI
     settings->maxVisibleItems = ui->spinBox->value();
     settings->scheduleTableVisible = ui->showTableCheckBox->isChecked();
+    settings->langCode = getSelectedLangCode();
 
     // Other
     settings->alwaysOnTop = ui->alwaysOnTopCheckBox->isChecked();
@@ -133,6 +140,8 @@ void MainWindow::applySettings()
     emit ui->spinBox->valueChanged(settings->maxVisibleItems);
     ui->showTableCheckBox->setChecked(settings->scheduleTableVisible);
     emit ui->showTableCheckBox->toggled(settings->scheduleTableVisible);
+    setRadioButtons();
+    changeLang();
 
     // Other
     ui->alwaysOnTopCheckBox->setChecked(settings->alwaysOnTop);
@@ -142,6 +151,13 @@ void MainWindow::applySettings()
     if(settings->saveLastWindowState) restoreGeometry(settings->lastWindowRect);
 
     settings->onInit = false;
+}
+
+void MainWindow::setRadioButtons()
+{
+    if(settings->langCode == "en") ui->enRadioButton->setChecked(true);
+    else if(settings->langCode == "ua") ui->uaRadioButton->setChecked(true);
+    else if(settings->langCode == "ru") ui->ruRadioButton->setChecked(true);
 }
 
 void MainWindow::changeOnTopRule(bool state)
@@ -315,12 +331,76 @@ void MainWindow::tablesWarnMsg(TableType table)
     }
 }
 
+QString MainWindow::getSelectedLangCode()
+{
+    if(ui->enRadioButton->isChecked()) return "en";
+    else if(ui->uaRadioButton->isChecked()) return "ua";
+    else if(ui->ruRadioButton->isChecked()) return "ru";
+    else return "en";
+}
+
+void setTranslator(QTranslator* translator, QString filename)
+{
+    qApp->removeTranslator(translator);
+    QString path = QApplication::applicationDirPath();
+    path.append("/translations/");
+    if(translator->load(path + filename))
+    qApp->installTranslator(translator);
+}
+
+void MainWindow::changeLang()
+{
+    QString lang;
+    if(sender() and !settings->onInit)
+    {
+        lang = getSelectedLangCode();
+        if(lang == settings->langCode) return;
+        else saveSettings();
+    }
+    else lang = settings->langCode;
+
+    setTranslator(translator, QString("FZcode_%1").arg(lang));
+    changeHomeButtonsLayout(lang == "en" ? LayoutType::TwoColumns : LayoutType::OneColumn);
+}
+
+void MainWindow::changeHomeButtonsLayout(LayoutType type)
+{
+    QGridLayout *layout = qobject_cast<QGridLayout*>(ui->homeBtnsContainer->layout());
+
+    QLayoutItem* btns[4];
+    for(int btnIndex = 0; btnIndex < 4; ++btnIndex)
+    {
+        btns[btnIndex] = layout->takeAt(0);
+    }
+
+    if(type == LayoutType::OneColumn)
+    {
+        for(int btnIndex = 0; btnIndex < 4; ++btnIndex)
+        {
+            layout->addItem(btns[btnIndex], btnIndex, 0);
+        }
+    }
+    else
+    {
+        layout->addItem(btns[0], 0, 0);
+        layout->addItem(btns[1], 0, 1);
+        layout->addItem(btns[2], 1, 0);
+        layout->addItem(btns[3], 1, 1);
+    }
+}
+
 // EVENTS
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
     saveSettings();
     tablesData->saveData();
+}
+
+void MainWindow::changeEvent(QEvent* event)
+{
+    if(event->type() == QEvent::LanguageChange) ui->retranslateUi(this);
+    else QMainWindow::changeEvent(event);
 }
 
 bool MainWindow::nativeEvent(const QByteArray&, void *message, long *result)

@@ -14,6 +14,7 @@ void Settings::loadSettings()
     // UI
     maxVisibleItems = settings.value("UI/maxVisibleItems", maxVisibleItems).toInt();
     scheduleTableVisible = settings.value("UI/scheduleTableVisible", scheduleTableVisible).toBool();
+    langCode = settings.value("UI/langCode", langCode).toString();
 
     // Other
     alwaysOnTop = settings.value("Other/alwaysOnTop", alwaysOnTop).toBool();
@@ -32,6 +33,7 @@ void Settings::saveSettings()
     settings.beginGroup("UI");
     settings.setValue("maxVisibleItems", maxVisibleItems);
     settings.setValue("scheduleTableVisible", scheduleTableVisible);
+    settings.setValue("langCode", langCode);
     settings.endGroup();
 
     settings.beginGroup("Other");

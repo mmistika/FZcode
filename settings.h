@@ -22,7 +22,7 @@ public:
     int maxVisibleItems{15};
     bool scheduleTableVisible{true};
     QString styleName{"default.qss"};
-    int langId{1};
+    QString langCode{"en"};
 
     // Shortcuts
     QString visibilityShortcut{"Ctrl+Shift+V"};

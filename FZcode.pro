@@ -31,7 +31,9 @@ FORMS += \
     mainwindow.ui
 
 TRANSLATIONS += \
-    translations\FZcode_en_US.ts
+    translations\FZcode_en.ts \
+    translations\FZcode_ua.ts \
+    translations\FZcode_ru.ts \
 
 CONFIG += lrelease
 CONFIG += embed_translations

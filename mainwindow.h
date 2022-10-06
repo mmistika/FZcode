@@ -7,6 +7,7 @@
 
 #include <QMainWindow>
 #include <QClipboard>
+#include <QTranslator>
 
 #include "settings.h"
 #include "tablesdata.h"
@@ -25,11 +26,15 @@ class MainWindow : public QMainWindow
     Settings *settings;
     TablesData *tablesData;
     QClipboard *clipboard;
+    QTranslator *translator;
 
     int currentDayIndex; // [0 - Monday ... 6 - Sunday]
 
     const int m_minWidth{526};
     const int m_minWidthNoTable{280};
+
+    const int m_homeBtnsContainerMaxHeight{65};
+    const int m_homeBtnsContainerMaxHeightOneColumn{125};
 
     QList<CustomToolTip*> m_toolTips;
 
@@ -63,7 +68,15 @@ private:
     bool isTablesValid(TableType table);
     void tablesWarnMsg(TableType table);
 
+    void changeLang();
+    QString getSelectedLangCode();
+    void setRadioButtons();
+
+    enum class LayoutType { OneColumn, TwoColumns };
+    void changeHomeButtonsLayout(LayoutType type);
+
     void closeEvent(QCloseEvent *event);
+    void changeEvent(QEvent *event);
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 };
 
