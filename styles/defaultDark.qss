@@ -151,17 +151,17 @@ QListView::item:hover{
 	border-radius: 5px;
 }
 
-#homeBtnsContainer QPushButton {
+#homeLeftContainer QPushButton {
 	border-radius: 4px;
 	background: #4e5ad0;
 	color: #ffffff;
 }
 
-#homeBtnsContainer QPushButton:hover{
+#homeLeftContainer QPushButton:hover{
 	background: #4752c4;
 }
 
-#homeBtnsContainer QPushButton:pressed{
+#homeLeftContainer QPushButton:pressed{
 	background: #3e47ab;
 }
 
